@@ -1,0 +1,18 @@
+{
+  "autorun": true,
+  "terminals": [
+    {
+      "name": "pnpm ",
+      "cwd": "[cwd]",
+      "execute": false,
+      "command": "pnpm "
+    },
+    {
+      "name": "@image-stamp/cli: pnpm run start",
+      "cwd": "[cwd]/packages/cli",
+      "focus": true,
+      "execute": false,
+      "command": "pnpm run start"
+    }
+  ]
+}

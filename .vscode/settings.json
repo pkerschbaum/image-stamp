@@ -1,0 +1,7 @@
+{
+  "editor.rulers": [100],
+  "typescript.tsdk": "./packages/image-stamp/node_modules/typescript/lib",
+  "search.exclude": {
+    "**/dist": true
+  }
+}

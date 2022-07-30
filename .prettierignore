@@ -1,0 +1,8 @@
+**/dist
+**/public
+
+pnpm-lock.yaml
+
+# coverage
+**/.nyc_output/**
+**/coverage/**
