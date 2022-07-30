@@ -21,6 +21,7 @@ const PATHS = {
   INPUT_DIR,
   OUTPUT_DIR: path.join(__dirname, '..', 'output'),
   STAMP_FILE: path.join(__dirname, '..', 'stamp.png'),
+  SPECIAL_STAMP_FILE: path.join(__dirname, '..', 'special-stamp.png'),
 } as const;
 const PADDING = {
   BOTTOM: 32,
@@ -30,6 +31,7 @@ const PADDING = {
 await fs.promises.mkdir(PATHS.OUTPUT_DIR, { recursive: true });
 const allInputFiles = await fs.promises.readdir(PATHS.INPUT_DIR);
 const stamp = sharp(PATHS.STAMP_FILE);
+const specialStamp = sharp(PATHS.SPECIAL_STAMP_FILE);
 
 await Promise.all(
   allInputFiles.map(async (relativePathOfFile) => {
@@ -42,22 +44,44 @@ await Promise.all(
 
     let output;
     if (options.position === 'bottom-right') {
-      const stampWidthAdjustedHeight = await stamp
+      const adjustedStamp = await stamp
         .resize(undefined, Math.floor(metadata_inputFile.height / 7))
         .toBuffer();
-      const metadata_logo = await sharp(stampWidthAdjustedHeight).metadata();
+      const metadata_logo = await sharp(adjustedStamp).metadata();
       invariant(metadata_logo.height);
       invariant(metadata_logo.width);
 
       output = sharp_inputFile.composite([
         {
-          input: stampWidthAdjustedHeight,
+          input: adjustedStamp,
           top: metadata_inputFile.height - metadata_logo.height - PADDING.BOTTOM,
           left: metadata_inputFile.width - metadata_logo.width - PADDING.RIGHT,
         },
       ]);
     } else {
-      throw new Error('not implemented');
+      const adjustedStamp = await specialStamp
+        .resize(metadata_inputFile.width, undefined)
+        .toBuffer();
+      const metadata_logo = await sharp(adjustedStamp).metadata();
+      invariant(metadata_logo.height);
+      invariant(metadata_logo.width);
+
+      const adjustHeight = Math.floor(metadata_logo.height * 0.5);
+
+      output = sharp_inputFile
+        .resize({
+          height: metadata_inputFile.height + adjustHeight,
+          width: metadata_inputFile.width,
+          fit: 'contain',
+          position: 'bottom',
+        })
+        .composite([
+          {
+            input: adjustedStamp,
+            top: 0,
+            left: 0,
+          },
+        ]);
     }
 
     const outputPath = path.join(PATHS.OUTPUT_DIR, path.basename(absolutePathOfFile));
