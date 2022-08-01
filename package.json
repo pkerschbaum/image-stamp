@@ -7,10 +7,7 @@
     "mr:nuke:node-modules": "pnpm --parallel exec rimraf node_modules && rimraf node_modules",
     "mr:lint": "nx run-many --target=lint:package --all --parallel",
     "mr:lint:fix": "nx run-many --target=lint:package:fix --all --parallel",
-    "mr:format": "prettier --write --ignore-unknown .",
-    "mr:build": "nx run-many --target=build --all",
-    "mr:compile": "nx run-many --target=compile --all",
-    "mr:libs:watch": "pnpm --parallel run lib:watch"
+    "mr:format": "prettier --write --ignore-unknown ."
   },
   "devDependencies": {
     "prettier": "^2.7.1",
